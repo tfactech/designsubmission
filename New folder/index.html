@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Tees For A Cause : Design Competition</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f9fafb;
+      --card: #fff;
+      --accent: #2563eb;
+      --text: #1e293b;
+      --muted: #64748b;
+      --error: #dc2626;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      width: 100%;
+      max-width: 480px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: fadeIn 0.8s ease;
+    }
+    h1 {
+      font-size: 1.5rem;
+      text-align: center;
+      margin: 0;
+    }
+    p {
+      text-align: center;
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin: 0;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    label {
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    input, textarea {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: border 0.2s;
+      width: 100%;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    textarea {
+      resize: none;
+      height: 80px;
+    }
+    button {
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover { background: #1d4ed8; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .status {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: center;
+    }
+    .error { color: var(--error) !important; }
+    .preview {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .preview img {
+      max-width: 100%;
+      border-radius: 8px;
+    }
+    #thanks {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 12px;
+      animation: fadeIn 0.6s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Tees For A Cause</h1>
+    <p>Upload your T-shirt design and stand a chance to win!</p>
+
+    <form id="submissionForm">
+      <label>Name</label>
+      <input type="text" id="name" name="name" required placeholder="Your full name" />
+
+      <label>Email</label>
+      <input type="email" id="email" name="email" required placeholder="you@example.com" />
+
+      <label>Design Details</label>
+      <textarea id="details" name="details" placeholder="Describe your design concept..."></textarea>
+
+      <label>Upload Design</label>
+      <input type="file" id="image" name="image" accept="image/*" style="display:none" />
+      <button type="button" id="pickFileBtn">Choose Image</button>
+      <div id="fileName" class="status">No file chosen</div>
+
+      <div class="preview" id="preview">
+        <img id="previewImg" alt="Preview" />
+        <div id="previewMeta" class="status"></div>
+      </div>
+
+      <button type="submit" id="submitBtn">Submit Entry</button>
+      <div id="status" class="status"></div>
+    </form>
+  </div>
+
+  <div id="thanks">
+    <h1>✅ Submission Received!</h1>
+    <p>Thank you for participating. We’ll be in touch soon!</p>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    // Supabase Config
+    const SUPABASE_URL = "https://gmgynepoxilolfabbmwc.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdtZ3luZXBveGlsb2xmYWJibXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2OTI3NTUsImV4cCI6MjA3NjI2ODc1NX0.wP87opUoux8v2aKhTwfrhMgVPTQxBALGLY6nyl_nTHs";
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const MAX_FILE_BYTES = 25 * 1024 * 1024;
+    const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
+    const form = document.getElementById("submissionForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const statusEl = document.getElementById("status");
+    const imageInput = document.getElementById("image");
+    const pickFileBtn = document.getElementById("pickFileBtn");
+    const fileNameEl = document.getElementById("fileName");
+    const preview = document.getElementById("preview");
+    const previewImg = document.getElementById("previewImg");
+    const previewMeta = document.getElementById("previewMeta");
+
+    pickFileBtn.addEventListener("click", () => imageInput.click());
+
+    imageInput.addEventListener("change", () => {
+      const file = imageInput.files?.[0];
+      if (!file) {
+        fileNameEl.textContent = "No file chosen";
+        preview.style.display = "none";
+        previewImg.removeAttribute("src");
+        previewMeta.textContent = "";
+        return;
+      }
+
+      fileNameEl.textContent = file.name;
+
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        setError("Unsupported file type. Only JPG, PNG, or WebP are allowed.");
+        imageInput.value = "";
+        preview.style.display = "none";
+        return;
+      }
+      if (file.size > MAX_FILE_BYTES) {
+        setError("File is too large (max 25MB).");
+        imageInput.value = "";
+        preview.style.display = "none";
+        return;
+      }
+
+      const url = URL.createObjectURL(file);
+      previewImg.onload = () => {
+        const { naturalWidth: w, naturalHeight: h } = previewImg;
+        previewMeta.textContent = `${file.name} • ${(file.size / 1024 / 1024).toFixed(2)} MB • ${file.type} • ${w}×${h}px`;
+        URL.revokeObjectURL(url);
+      };
+      previewImg.onerror = () => {
+        previewMeta.textContent = "Could not load preview.";
+        URL.revokeObjectURL(url);
+      };
+      previewImg.src = url;
+      preview.style.display = "block";
+      clearStatus();
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearStatus();
+
+      const name = form.name.value.trim();
+      const email = form.email.value.trim();
+      const details = form.details.value.trim();
+      const file = imageInput.files?.[0];
+
+      if (!name) return setError("Please enter your name.");
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError("Please enter a valid email.");
+      if (!file) return setError("Please choose an image.");
+      if (!ALLOWED_TYPES.includes(file.type)) return setError("Unsupported file type.");
+      if (file.size > MAX_FILE_BYTES) return setError("File is too large (max 25MB).");
+
+      submitBtn.disabled = true;
+      setStatus("Uploading your submission…");
+
+      try {
+        const filePath = `submissions/${Date.now()}_${file.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from("tfac-uploads")
+          .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: publicUrlData } = supabase.storage
+          .from("tfac-uploads")
+          .getPublicUrl(filePath);
+        const imageUrl = publicUrlData.publicUrl;
+
+        const { error: insertError } = await supabase.from("entries").insert([
+          { name, email, details, image_url: imageUrl, submitted_at: new Date().toISOString() },
+        ]);
+        if (insertError) throw insertError;
+
+        setStatus("Submission successful! Redirecting…");
+        setTimeout(() => {
+          document.querySelector(".card").style.display = "none";
+          document.getElementById("thanks").style.display = "flex";
+        }, 800);
+      } catch (err) {
+        console.error(err);
+        setError("Something went wrong. Please try again.");
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    function setStatus(msg) {
+      statusEl.textContent = msg;
+      statusEl.classList.remove("error");
+    }
+    function setError(msg) {
+      statusEl.textContent = msg;
+      statusEl.classList.add("error");
+    }
+    function clearStatus() {
+      statusEl.textContent = "";
+      statusEl.classList.remove("error");
+    }
+  </script>
+</body>
+</html>
