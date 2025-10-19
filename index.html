@@ -234,7 +234,7 @@ textarea{ min-height:120px; resize:vertical; }
   border:1px solid #e7e1d6;
   border-radius:6px;
   padding:10px 10px 16px; /* extra bottom padding */
-  box-shadow:0 10px 18px rgba(0,0,0,.18), 0 2px 0 rgba(0,0,0,.04);
+  box-shadow:0 10px 18px rgba(0,0,0,.18), 0 2px 0 rgba(0,0,0,0.04);
   width:100%;
   transform:rotate(-1.2deg);
   position:relative;
@@ -252,7 +252,7 @@ textarea{ min-height:120px; resize:vertical; }
   top:-8px;
   border-radius:3px;
   box-shadow:0 2px 6px rgba(0,0,0,0.12);
-  opacity:0.95;
+  opacity:.95;
 }
 .preview::before{ left:14px; transform:rotate(-8deg); }
 .preview::after { right:14px; transform:rotate(8deg); }
@@ -348,7 +348,7 @@ textarea{ min-height:120px; resize:vertical; }
     repeating-linear-gradient(90deg, #f7f0e6 0 10px, #efe6d9 10px 20px) border-box;
   border:1px solid rgba(0,0,0,.08);
   border-radius:4px;
-  box-shadow:0 2px 6px rgba(0,0,0,.12);
+  box-shadow:0 2px 6px rgba(0,0,0,0.12);
   opacity:.95;
 }
 .tl{ top:14px; left:24px; transform:rotate(-9deg); }
@@ -395,7 +395,7 @@ textarea{ min-height:120px; resize:vertical; }
   border:1px solid #e7e1d6;
   border-radius:6px;
   padding:10px 10px 16px;
-  box-shadow:0 10px 18px rgba(0,0,0,.18), 0 2px 0 rgba(0,0,0,0.04);
+  box-shadow:0 10px 24px rgba(0,0,0,0.15), 0 2px 0 rgba(0,0,0,0.04);
 }
 .polaroid .frame{
   width:100%; height:120px;
@@ -560,9 +560,10 @@ textarea{ min-height:120px; resize:vertical; }
   </div>
 
   <script type="module">
-    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+    // Safari-friendly ESM CDN (works well on GitHub Pages)
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-    // Supabase Config (public anon key only — you provided this earlier)
+    // Supabase Config (public anon key only)
     const SUPABASE_URL = "https://gmgynepoxilolfabbmwc.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdtZ3luZXBveGlsb2xmYWJibXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2OTI3NTUsImV4cCI6MjA3NjI2ODc1NX0.wP87opUoux8v2aKhTwfrhMgVPTQxBALGLY6nyl_nTHs";
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -572,6 +573,7 @@ textarea{ min-height:120px; resize:vertical; }
     const BUCKET = "tfac-uploads";
 
     const MAX_FILE_BYTES = 25 * 1024 * 1024;
+    // Keeping your current types (including webp)
     const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
     const MAX_WORDS = 100;
 
@@ -616,7 +618,7 @@ textarea{ min-height:120px; resize:vertical; }
 
     // Update filename, validate, and show preview
     imageInput.addEventListener("change", () => {
-      const file = imageInput.files?.[0];
+      const file = imageInput.files && imageInput.files[0]; // Safari-safe (no optional chaining)
       if (!file) {
         fileNameEl.textContent = "No file chosen";
         preview.style.display = "none";
@@ -628,7 +630,7 @@ textarea{ min-height:120px; resize:vertical; }
 
       fileNameEl.textContent = file.name;
 
-      if (!ALLOWED_TYPES.includes(file.type)) {
+      if (ALLOWED_TYPES.indexOf(file.type) === -1) {
         setError("Unsupported file type. Only JPG, PNG, or WebP are allowed.");
         imageInput.value = "";
         preview.style.display = "none";
@@ -643,7 +645,8 @@ textarea{ min-height:120px; resize:vertical; }
 
       const url = URL.createObjectURL(file);
       previewImg.onload = () => {
-        const { naturalWidth: w, naturalHeight: h } = previewImg;
+        const w = previewImg.naturalWidth;
+        const h = previewImg.naturalHeight;
         measuredWidth = w;
         measuredHeight = h;
         previewMeta.textContent = `${file.name} • ${(file.size / 1024 / 1024).toFixed(2)} MB • ${file.type} • ${w}×${h}px`;
@@ -669,7 +672,7 @@ textarea{ min-height:120px; resize:vertical; }
       const school = form.school.value.trim();
       const interest = form.interest.value.trim();
       const details = form.details.value.trim();
-      const file = imageInput.files?.[0];
+      const file = imageInput.files && imageInput.files[0]; // Safari-safe
 
       if (!name) return setError("Please enter your name.");
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError("Please enter a valid email.");
@@ -678,7 +681,7 @@ textarea{ min-height:120px; resize:vertical; }
       if (!interest) return setError("Please tell us why you're interested in participating.");
       if (!details) return setError("Please describe your design (max 100 words).");
       if (!file) return setError("Please choose an image.");
-      if (!ALLOWED_TYPES.includes(file.type)) return setError("Unsupported file type.");
+      if (ALLOWED_TYPES.indexOf(file.type) === -1) return setError("Unsupported file type.");
       if (file.size > MAX_FILE_BYTES) return setError("File is too large (max 25MB).");
       if (wordCount(details) > MAX_WORDS) return setError("Please limit your design description to 100 words.");
 
@@ -691,14 +694,14 @@ textarea{ min-height:120px; resize:vertical; }
         const filePath = `submissions/${Date.now()}_${sanitized}`;
 
         const { error: uploadError } = await supabase.storage
-          .from('tfac-uploads')
+          .from(BUCKET)
           .upload(filePath, file);
 
         if (uploadError) throw uploadError;
 
         // 2) Get public URL
         const { data: publicUrlData, error: urlErr } = supabase.storage
-          .from('tfac-uploads')
+          .from(BUCKET)
           .getPublicUrl(filePath);
         if (urlErr) throw urlErr;
         const imageUrl = publicUrlData.publicUrl;
@@ -723,24 +726,24 @@ textarea{ min-height:120px; resize:vertical; }
 
         // 4) Insert row with all fields into public.submissions and return generated id
         const { data: inserted, error: insertError } = await supabase
-          .from('submissions')
+          .from(TABLE)
           .insert([payload])
           .select('id')
           .single();
 
         if (insertError) throw insertError;
 
-        const submissionId = inserted?.id ?? null;
+        const submissionId = inserted && inserted.id ? inserted.id : null;
         console.log('Inserted submission ID:', submissionId);
 
         setStatus("Submission successful!");
         // Show styled thank-you card
-        document.querySelector(".card").hidden = true;
-        document.getElementById("thanks").hidden = false;
+        card.hidden = true;
+        thanks.hidden = false;
         window.scrollTo({ top: 0, behavior: "smooth" });
       } catch (err) {
         console.error(err);
-        setError(err?.message || "Something went wrong. Please try again.");
+        setError((err && err.message) ? err.message : "Something went wrong. Please try again.");
       } finally {
         submitBtn.disabled = false;
       }
@@ -758,6 +761,14 @@ textarea{ min-height:120px; resize:vertical; }
       statusEl.textContent = "";
       statusEl.classList.remove("error");
     }
+  </script>
+
+  <!-- Old Safari fallback (no module support) -->
+  <script nomodule>
+    document.body.insertAdjacentHTML(
+      "afterbegin",
+      '<div style="background:#fff3cd;border:1px solid #ffeeba;padding:12px;border-radius:8px;margin-bottom:12px;font:14px/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;">Your browser doesn’t support modern JavaScript modules. Please update Safari to the latest version.</div>'
+    );
   </script>
 </body>
 </html>
