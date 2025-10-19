@@ -2,13 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Tees For A Cause : Design Competition</title>
+  <title>TEESFORACAUSE: DESIGN COMPETITION</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- Scrapbook vibe fonts used by the combined CSS -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Karla:wght@400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Karla:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playwrite+FR+Moderne:wght@100..400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans+Thai:wght@100..800&display=swap" rel="stylesheet">
 
   <!-- Combined stylesheet inlined -->
   <style>
@@ -28,9 +31,9 @@
   --accent-contrast:#ffffff;
 
   /* Fonts */
-  --font-heading:"Playfair Display", Georgia, serif;
-  --font-body:"Karla", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-  --font-accent:"Caveat", system-ui, sans-serif;
+  --font-heading:"Bagel Fat One", system-ui, sans-serif; /* updated to use your new title font */
+  --font-body:"Playpen Sans Thai", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  --font-accent:"Playwrite FR Moderne", system-ui, sans-serif;
 
   /* Layout tweaks */
   --form-max: 880px;   /* WIDER form card */
@@ -76,19 +79,19 @@ h1{
   margin:0;
   font-family:var(--font-heading);
   font-weight:700;
-  font-size:28px;
+  font-size:36px;
   line-height:1.25;
   letter-spacing:.2px;
 }
 
 /* Logo (circular, contained) */
 .logo{
-  width:140px;
-  height:140px;
+  width:200px;
+  height:200px;
   border-radius:50%;
   object-fit:contain;
   object-position:var(--logo-x) var(--logo-y);
-  border:3px solid var(--ink);
+  border:6px solid var(--ink);
   background:transparent;
   box-shadow:0 4px 12px rgba(0,0,0,.18);
   display:block;
@@ -108,22 +111,6 @@ h1{
   box-shadow:0 10px 24px rgba(0,0,0,0.15), 0 2px 0 rgba(0,0,0,0.04);
   overflow:hidden;
   margin-inline:auto;
-}
-
-/* Decorative tape on form card */
-.card::before{
-  content:"";
-  position:absolute;
-  top:10px; left:16px;
-  width:68px; height:18px;
-  background:
-    linear-gradient(0deg, rgba(0,0,0,0.06), rgba(0,0,0,0.06)) padding-box,
-    repeating-linear-gradient(90deg, #f7f0e6 0 10px, #efe6d9 10px 20px) border-box;
-  border:1px solid rgba(0,0,0,0.08);
-  border-radius:3px;
-  transform:rotate(-5deg);
-  box-shadow:0 2px 6px rgba(0,0,0,0.12);
-  opacity:0.95;
 }
 
 .wrap{
@@ -180,8 +167,8 @@ label{
   display:block;
   font-family:var(--font-accent);
   font-weight:700;
-  font-size:20px;
-  margin-bottom:6px;
+  font-size:14px;
+  margin-bottom:4px;
 }
 input[type="text"],
 input[type="email"],
@@ -194,7 +181,7 @@ textarea{
   color:var(--ink);
   outline:none;
   font-family:var(--font-body);
-  font-size:16px;
+  font-size:14px;
   line-height:1.45;
   transition: box-shadow .15s ease, border-color .15s ease, background-color .15s ease;
 }
@@ -408,7 +395,7 @@ textarea{ min-height:120px; resize:vertical; }
   border:1px solid #e7e1d6;
   border-radius:6px;
   padding:10px 10px 16px;
-  box-shadow:0 10px 18px rgba(0,0,0,.18), 0 2px 0 rgba(0,0,0,.04);
+  box-shadow:0 10px 18px rgba(0,0,0,.18), 0 2px 0 rgba(0,0,0,0.04);
 }
 .polaroid .frame{
   width:100%; height:120px;
@@ -489,7 +476,7 @@ textarea{ min-height:120px; resize:vertical; }
   <div class="card" role="form" aria-label="Design submission form">
     <div class="header">
       <img class="logo" src="./tfac.png" alt="TFAC logo" />
-      <h1>Tees For A Cause : Design Competition</h1>
+      <h1>TEESFORACAUSE: DESIGN COMPETITION</h1>
     </div>
 
     <p class="hint" style="margin: 0 0 8px 0;">Upload your T‑shirt design and stand a chance to win!</p>
@@ -514,7 +501,6 @@ textarea{ min-height:120px; resize:vertical; }
         <div>
           <label for="age">Age</label>
           <input id="age" name="age" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="e.g., 16" required />
-          <div class="hint">Enter a number between 5 and 120.</div>
         </div>
       </div>
 
@@ -530,14 +516,14 @@ textarea{ min-height:120px; resize:vertical; }
       <div class="row">
         <div>
           <label for="interest">Why are you interested in participating?</label>
-          <textarea id="interest" name="interest" placeholder="Tell us what motivated you to join…"></textarea>
+          <textarea id="interest" name="interest" placeholder="Tell us what motivated you to join…" required></textarea>
         </div>
       </div>
 
       <div class="row">
         <div>
           <label for="details">Design Details (max 100 words)</label>
-          <textarea id="details" name="details" placeholder="Describe your design concept..."></textarea>
+          <textarea id="details" name="details" placeholder="Describe your design concept..." required></textarea>
           <div class="hint"><span id="detailsCount">0</span>/100 words</div>
         </div>
       </div>
@@ -545,13 +531,13 @@ textarea{ min-height:120px; resize:vertical; }
       <div class="row">
         <div class="file-group">
           <label for="image">Upload Design</label>
-          <input id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp" />
+          <input id="image" name="image" type="file" accept="image/jpeg,image/png" required />
           <div class="file-actions">
             <button id="pickFileBtn" class="btn" type="button" aria-controls="image">Choose image</button>
             <div id="fileName" class="file-name" aria-live="polite">No file chosen</div>
           </div>
 
-          <div class="hint">Max 25MB. JPG, PNG, or WebP.</div>
+          <div class="hint">Max 25MB. JPG, PNG.</div>
 
           <div id="preview" class="preview" aria-live="polite">
             <img id="previewImg" alt="Selected image preview" />
@@ -576,7 +562,7 @@ textarea{ min-height:120px; resize:vertical; }
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-    // Supabase Config (public anon key only — you already provided this)
+    // Supabase Config (public anon key only — you provided this earlier)
     const SUPABASE_URL = "https://gmgynepoxilolfabbmwc.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdtZ3luZXBveGlsb2xmYWJibXdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2OTI3NTUsImV4cCI6MjA3NjI2ODc1NX0.wP87opUoux8v2aKhTwfrhMgVPTQxBALGLY6nyl_nTHs";
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -685,11 +671,12 @@ textarea{ min-height:120px; resize:vertical; }
       const details = form.details.value.trim();
       const file = imageInput.files?.[0];
 
-      // Validation
       if (!name) return setError("Please enter your name.");
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError("Please enter a valid email.");
-      if (!ageRaw || isNaN(Number(ageRaw)) || Number(ageRaw) < 5 || Number(ageRaw) > 120) return setError("Please enter a valid age (5–120).");
+      if (!ageRaw || isNaN(Number(ageRaw)) || Number(ageRaw) < 5 || Number(ageRaw) > 120) return setError("Please enter a valid age.");
       if (!school) return setError("Please enter your school.");
+      if (!interest) return setError("Please tell us why you're interested in participating.");
+      if (!details) return setError("Please describe your design (max 100 words).");
       if (!file) return setError("Please choose an image.");
       if (!ALLOWED_TYPES.includes(file.type)) return setError("Unsupported file type.");
       if (file.size > MAX_FILE_BYTES) return setError("File is too large (max 25MB).");
@@ -704,53 +691,52 @@ textarea{ min-height:120px; resize:vertical; }
         const filePath = `submissions/${Date.now()}_${sanitized}`;
 
         const { error: uploadError } = await supabase.storage
-          .from(BUCKET)
+          .from('tfac-uploads')
           .upload(filePath, file);
 
         if (uploadError) throw uploadError;
 
         // 2) Get public URL
         const { data: publicUrlData, error: urlErr } = supabase.storage
-          .from(BUCKET)
+          .from('tfac-uploads')
           .getPublicUrl(filePath);
         if (urlErr) throw urlErr;
         const imageUrl = publicUrlData.publicUrl;
 
-        // 3) Build full payload with ALL inputs (and useful image metadata)
+        // 3) Build full payload with ALL inputs
         const payload = {
           name,
           email,
           age: Number(ageRaw),
           school,
-          interest,                // WHY they’re participating
-          details,                 // design description (<=100 words)
-          image_url: imageUrl,     // public URL to the uploaded image
+          interest,
+          details,
+          image_url: imageUrl,
           image_original_name: file.name,
           image_sanitized_name: sanitized,
           image_mime: file.type,
           image_size_bytes: file.size,
-          image_width: measuredWidth,   // may be null if preview failed
-          image_height: measuredHeight, // may be null if preview failed
+          image_width: measuredWidth,
+          image_height: measuredHeight,
           submitted_at: new Date().toISOString(),
         };
 
-        // 4) Insert row with all fields into public.submissions
+        // 4) Insert row with all fields into public.submissions and return generated id
         const { data: inserted, error: insertError } = await supabase
-          .from(TABLE) // public.submissions
+          .from('submissions')
           .insert([payload])
           .select('id')
           .single();
 
         if (insertError) throw insertError;
 
-        // optional: get generated id returned
         const submissionId = inserted?.id ?? null;
         console.log('Inserted submission ID:', submissionId);
 
         setStatus("Submission successful!");
         // Show styled thank-you card
-        card.hidden = true;
-        thanks.hidden = false;
+        document.querySelector(".card").hidden = true;
+        document.getElementById("thanks").hidden = false;
         window.scrollTo({ top: 0, behavior: "smooth" });
       } catch (err) {
         console.error(err);
