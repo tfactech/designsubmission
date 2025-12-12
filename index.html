@@ -2,208 +2,196 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Submission Form</title>
+  <title>TEESFORACAUSE: DONATION DRIVE</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <style>
-    body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial;padding:28px;background:#f6f4f1;color:#111;margin:0;}
-    .card{max-width:760px;margin:18px auto;padding:20px;border-radius:12px;background:#fff;box-shadow:0 8px 30px rgba(15,15,15,0.06);}
-    label{display:block;margin-bottom:6px;font-weight:600}
-    input,button{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #ddd;font-size:15px}
-    .row{margin-bottom:12px}
-    .checkbox-inline{display:flex;gap:10px;align-items:center}
-    .hint{color:#666;font-size:13px;margin-top:6px}
-    .status{min-height:20px;margin-top:8px;font-size:14px}
-    .status.error{color:#b00020}
-    .status.ok{color:green}
-    .actions{display:flex;gap:10px}
-    .small{font-size:13px;color:#555}
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Karla:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playwrite+FR+Moderne:wght@100..400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans+Thai:wght@100..800&display=swap" rel="stylesheet">
 
-    /* thank you view */
-    #thanksView {
-      display:none;
-      max-width:760px;
-      margin:40px auto;
-      padding:28px;
-      background:#fff;
-      border-radius:14px;
-      box-shadow:0 12px 40px rgba(15,15,15,0.08);
-      text-align:center;
+  <style>
+    :root{
+      --bg:#F5EEDF; /* soft beige */
+      --paper:#FFFFFF; /* pure white */
+      --ink:#000000; /* black */
+      --muted:#5d5d5d;
+      --border:#d9d2c6;
+      --accent:#000000; /* black buttons */
+      --accent-contrast:#ffffff;
+      --font-heading:"Bagel Fat One", system-ui;
+      --font-body:"Playpen Sans Thai", system-ui;
+      --font-accent:"Playwrite FR Moderne", system-ui;
+      --form-max:880px;
+      --hero-max:920px;
     }
-    #thanksView h1{margin:0 0 10px 0;font-size:26px}
-    #thanksView p{color:#444;margin-bottom:18px}
-    #thanksView a{display:inline-block;padding:10px 14px;border-radius:8px;background:#111;color:#fff;font-weight:700;text-decoration:none}
+
+    body{
+      margin:0;
+      background: linear-gradient(var(--bg), var(--bg)), url("https://www.transparenttextures.com/patterns/handmade-paper.png");
+      font-family:var(--font-body);
+      padding:24px;
+      color:var(--ink);
+    }
+
+    .card{
+      /* Make the form card visually white to match the B color scheme */
+      background: #ffffff;
+      /* keep subtle paper texture off for pure white look */
+      background-image: none;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:26px;
+      box-shadow:0 10px 24px rgba(0,0,0,0.15);
+      max-width:var(--form-max);
+      margin:auto;
+    }
+
+    h1{ font-family:var(--font-heading); margin:0 0 8px 0; }
+
+    label{ font-family:var(--font-accent); font-weight:700; font-size:14px; }
+
+    input[type=text],input[type=email],input[type=tel]{
+      width:100%; padding:12px; border-radius:10px; border:1px solid var(--border);
+      font-size:14px; font-family:var(--font-body);
+    }
+
+    .checkbox-group{ display:flex; gap:10px; align-items:center; }
+    .checkbox-label{ font-size:14px; }
+
+    .btn{
+      background:var(--accent);
+      color:var(--accent-contrast);
+      padding:12px 18px;
+      border-radius:10px;
+      border:1px solid var(--accent);
+      cursor:pointer;
+      font-weight:700;
+    }
+
+    .status{ margin-top:8px; font-size:14px; }
+    .status.error{ color:#b00020; }
+    .status.ok{ color:green; }
+
+    #thanks{ display:none; text-align:center; }
+    #thanks h1{ font-family:var(--font-heading); }
+  
+    /* --- Overrides for cleaner titles & consistent padding --- */
+    .header-row h1{ font-size:28px; line-height:1.05; margin:0; text-transform:none; letter-spacing:0.5px; font-weight:700; }
+    .card{ padding:32px !important; }
+    form { display:block; }
+    form label{ display:block; margin:14px 0 8px 0; font-size:16px; }
+    input[type=text], input[type=email], input[type=tel]{ padding:14px 16px; border-radius:8px; }
+    .checkbox-group{ margin-top:12px; }
+    .btn{ padding:11px 18px; }
+    /* ensure no raw HTML displays by resetting white-space in container areas */
+    .card, .header-row, form { white-space: normal; }
   </style>
 </head>
 <body>
 
-  <!-- FORM VIEW -->
-  <div id="formView" class="card" role="form" aria-label="Submission form">
-    <h2 style="margin:0 0 12px 0">Enter details</h2>
+  <div id="formCard" class="card" style="padding-top:20px;">
+    <div class="header-row" style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <img src="./tfac.png" alt="TFAC Logo" style="width:42px;height:42px;border-radius:50%;object-fit:cover;flex-shrink:0;" />
+      <h1 style="margin:0;">TEESFORACAUSE: DONATION DRIVE</h1>
+    </div>
 
-    <form id="submissionForm" novalidate>
-      <div class="row">
-        <label for="name">Name</label>
-        <input id="name" name="name" type="text" placeholder="Full name" required />
+    <form id="submissionForm" novalidate> 
+      <label>Name</label>
+      <input id="name" name="name" type="text" placeholder="Your full name" required />
+
+      <br><br>
+      <label>Email</label>
+      <input id="email" name="email" type="email" placeholder="you@example.com" required />
+
+      <br><br>
+      <label>Age</label>
+      <input id="age" name="age" type="text" inputmode="numeric" placeholder="e.g., 16" required />
+
+      <br><br>
+      <label>Number</label>
+      <input id="number" name="number" type="tel" placeholder="10 digits" required />
+
+      <br><br>
+      <div class="checkbox-group">
+        <input id="confirmation" name="confirmation" type="checkbox" />
+        <label for="confirmation" class="checkbox-label">I confirm my participation</label>
       </div>
 
-      <div class="row">
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email" placeholder="you@example.com" required />
-      </div>
-
-      <div class="row">
-        <label for="age">Age</label>
-        <input id="age" name="age" type="text" inputmode="numeric" placeholder="16" required />
-      </div>
-
-      <div class="row">
-        <label for="number">Number</label>
-        <input id="number" name="number" type="tel" placeholder="10 digit mobile" required />
-      </div>
-
-      <div class="row">
-        <div class="checkbox-inline">
-          <input id="confirmation" name="confirmation" type="checkbox" />
-          <label for="confirmation" class="small">I confirm my participation</label>
-        </div>
-        <p class="hint">Please tick the box.</p>
-      </div>
-
-      <div class="actions">
-        <button id="submitBtn" type="submit">Submit entry</button>
-      </div>
-
-      <div id="status" class="status" aria-live="polite"></div>
+      <br>
+      <button id="submitBtn" class="btn" type="submit">Submit</button>
+      <div id="status" class="status"></div>
     </form>
   </div>
 
-  <!-- THANK YOU VIEW -->
-  <div id="thanksView">
-    <h1>Thank you — submission received!</h1>
-    <p>Your entry has been recorded. We’ll contact you if needed.</p>
-    <a href="#" onclick="showForm()">Submit another response</a>
+  <div id="thanks" class="card" style="padding-top:20px;">
+    <div class="header-row" style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <img src="./tfac.png" alt="TFAC Logo" style="width:42px;height:42px;border-radius:50%;object-fit:cover;flex-shrink:0;" />
+      <h1 style="margin:0;">Thank you for volunteering!</h1>
+    </div>
+    <p>Thank you for participating. We will contact you soon.</p>
+    
   </div>
 
-  <!-- SCRIPT -->
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/+esm";
 
-    // === SUPABASE CONFIG (unchanged) ===
-    const SUPABASE_URL = "https://xkrokzdjegxawyqgyfkr.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhrcm9remRqZWd4YXd5cWd5ZmtyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU0NzExODQsImV4cCI6MjA4MTA0NzE4NH0.hPGz4gHlnYvyPnaT5KIKLEOTGZ9pH_w7UYP3Yi13ekk";
+    // UPDATED SUPABASE VALUES
+    const SUPABASE_URL = "https://yxicunqthexfwysacjfo.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl4aWN1bnF0aGV4Znd5c2FjamZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1Mjg1NDMsImV4cCI6MjA4MTEwNDU0M30.AEQNRICSrjP63VGFstL3iwDBi6dGRhaUhMA0ozLN3Uo";
     const TABLE = "submissions";
 
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     const form = document.getElementById("submissionForm");
-    const submitBtn = document.getElementById("submitBtn");
     const statusEl = document.getElementById("status");
-    const formView = document.getElementById("formView");
-    const thanksView = document.getElementById("thanksView");
+    const formCard = document.getElementById("formCard");
+    const thanks = document.getElementById("thanks");
+    const submitBtn = document.getElementById("submitBtn");
 
-    function setStatus(msg){ statusEl.textContent = msg; statusEl.classList.remove("error"); statusEl.classList.add("ok"); }
-    function setError(msg){ statusEl.textContent = msg; statusEl.classList.remove("ok"); statusEl.classList.add("error"); }
-    function clearStatus(){ statusEl.textContent = ""; statusEl.classList.remove("error","ok"); }
-
-    function showThanks(){
-      formView.style.display = "none";
-      thanksView.style.display = "block";
-      window.scrollTo({top:0,behavior:"smooth"});
-    }
-
-    window.showForm = function(){
-      thanksView.style.display = "none";
-      formView.style.display = "block";
-      form.reset();
-      clearStatus();
-    };
-
-    // SUPABASE CLIENT
-    let supabase;
-    try{
-      supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth:{ persistSession:false }});
-      console.log("Supabase client created:", supabase);
-    }catch(e){
-      console.error("Supabase init error:", e);
-      setError("Could not initialize Supabase (see console).");
-    }
-
-    async function checkConnection(){
-      try{
-        const {data, error} = await supabase.from(TABLE).select("id").limit(1);
-        if(error) return {ok:false, error};
-        return {ok:true};
-      } catch(err){
-        return {ok:false, error:err};
-      }
+    function setStatus(msg, error=false){
+      statusEl.textContent = msg;
+      statusEl.classList.toggle("error", error);
+      statusEl.classList.toggle("ok", !error);
     }
 
     form.addEventListener("submit", async (e)=>{
       e.preventDefault();
-      clearStatus();
+      setStatus("");
 
       const name = form.name.value.trim();
       const email = form.email.value.trim();
-      const ageRaw = form.age.value.trim();
+      const age = form.age.value.trim();
       const number = form.number.value.trim();
       const confirmation = form.confirmation.checked;
 
-      if(!name) return setError("Enter name.");
-      if(!email || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) return setError("Invalid email.");
-      if(!ageRaw || isNaN(Number(ageRaw))) return setError("Enter a valid age.");
-      if(!number || !/^\\d{10}$/.test(number)) return setError("Enter a valid 10-digit number.");
-      if(!confirmation) return setError("You must confirm.");
+      if(!name) return setStatus("Enter name", true);
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setStatus("Invalid email", true);
+      if(isNaN(Number(age))) return setStatus("Invalid age", true);
+      if(!/^\d{10}$/.test(number)) return setStatus("Invalid number", true);
+      if(!confirmation) return setStatus("Please confirm participation", true);
 
       submitBtn.disabled = true;
-      setStatus("Checking Supabase connection...");
+      setStatus("Submitting...");
 
-      const conn = await checkConnection();
-      if(!conn.ok){
-        console.error("Connection error:", conn.error);
-        setError("Cannot reach Supabase: " + (conn.error?.message || JSON.stringify(conn.error)));
+      const payload = { name, email, age:Number(age), number, confirmation:true, submitted_at:new Date().toISOString() };
+
+      const { data, error } = await supabase.from(TABLE).insert([payload]).select("id").single();
+
+      if(error){
+        console.error(error);
+        setStatus("Insert failed: " + error.message, true);
         submitBtn.disabled = false;
         return;
       }
 
-      const payload = {
-        name,
-        email,
-        age:Number(ageRaw),
-        number,
-        confirmation:true,
-        submitted_at:new Date().toISOString()
-      };
-
-      console.log("Sending payload:", payload);
-      setStatus("Submitting...");
-
-      try{
-        const {data, error} = await supabase
-          .from(TABLE)
-          .insert([payload])
-          .select("id")
-          .single();
-
-        if(error){
-          console.error("Insert error:", error);
-          setError("Insert failed: " + error.message);
-          submitBtn.disabled = false;
-          return;
-        }
-
-        console.log("Insert ok:", data);
-        setStatus("Success!");
-        showThanks();
-
-      }catch(err){
-        console.error("Unexpected error:", err);
-        setError("Unexpected error: " + err.message);
-      }finally{
-        submitBtn.disabled = false;
-      }
+      setStatus("Success!", false);
+      formCard.style.display = "none";
+      thanks.style.display = "block";
     });
-
-    // debug helper
-    window._debugSupabase = {checkConnection};
   </script>
 
 </body>
