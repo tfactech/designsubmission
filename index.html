@@ -2,197 +2,250 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>TEESFORACAUSE: DONATION DRIVE</title>
+  <title>TEESFORACAUSE — The Fabric Within Us</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Karla:wght@400;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Playwrite+FR+Moderne:wght@100..400&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans+Thai:wght@100..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Playpen+Sans+Thai&display=swap" rel="stylesheet">
 
   <style>
-    :root{
-      --bg:#F5EEDF; /* soft beige */
-      --paper:#FFFFFF; /* pure white */
-      --ink:#000000; /* black */
-      --muted:#5d5d5d;
-      --border:#d9d2c6;
-      --accent:#000000; /* black buttons */
-      --accent-contrast:#ffffff;
-      --font-heading:"Bagel Fat One", system-ui;
-      --font-body:"Playpen Sans Thai", system-ui;
-      --font-accent:"Playwrite FR Moderne", system-ui;
-      --form-max:880px;
-      --hero-max:920px;
-    }
-
     body{
       margin:0;
-      background: linear-gradient(var(--bg), var(--bg)), url("https://www.transparenttextures.com/patterns/handmade-paper.png");
-      font-family:var(--font-body);
       padding:24px;
-      color:var(--ink);
+      background:#F5EEDF;
+      font-family:"Playpen Sans Thai", system-ui;
     }
 
     .card{
-      /* Make the form card visually white to match the B color scheme */
-      background: #ffffff;
-      /* keep subtle paper texture off for pure white look */
-      background-image: none;
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:26px;
-      box-shadow:0 10px 24px rgba(0,0,0,0.15);
-      max-width:var(--form-max);
+      max-width:900px;
       margin:auto;
+      background:#fff;
+      padding:32px;
+      border-radius:16px;
+      box-shadow:0 12px 28px rgba(0,0,0,.18);
     }
 
-    h1{ font-family:var(--font-heading); margin:0 0 8px 0; }
-
-    label{ font-family:var(--font-accent); font-weight:700; font-size:14px; }
-
-    input[type=text],input[type=email],input[type=tel]{
-      width:100%; padding:12px; border-radius:10px; border:1px solid var(--border);
-      font-size:14px; font-family:var(--font-body);
+    h1{
+      font-family:"Bagel Fat One";
+      margin:0;
+      font-size:36px;
     }
 
-    .checkbox-group{ display:flex; gap:10px; align-items:center; }
-    .checkbox-label{ font-size:14px; }
+    .subhead{
+      margin-top:6px;
+      font-size:18px;
+      color:#000;
+      font-weight:600;
+    }
 
-    .btn{
-      background:var(--accent);
-      color:var(--accent-contrast);
-      padding:12px 18px;
-      border-radius:10px;
-      border:1px solid var(--accent);
+    label{
+      font-weight:700;
+      display:block;
+      margin-top:18px;
+      font-size:16px;
+    }
+
+    input, select{
+      width:100%;
+      padding:14px 16px;
+      border-radius:12px;
+      border:1px solid #ccc;
+      margin-top:8px;
+      font-family:"Playpen Sans Thai", system-ui;
+      font-size:15px;
+    }
+
+    .qr-box{
+      margin:20px auto 10px;
+      width:360px;
+      padding:22px;
+      border-radius:22px;
+      background:#fff;
+      border:2px solid #000;
+      box-shadow:0 10px 24px rgba(0,0,0,.15);
+      text-align:center;
+    }
+
+    .qr-box img{
+      width:100%;
+      border-radius:16px;
+    }
+
+    .file-btn{
+      display:inline-block;
+      padding:14px 22px;
+      border-radius:14px;
+      background:#000;
+      color:#fff;
       cursor:pointer;
       font-weight:700;
+      font-size:16px;
+      font-family:"Playpen Sans Thai", system-ui;
+      margin-top:10px;
     }
 
-    .status{ margin-top:8px; font-size:14px; }
-    .status.error{ color:#b00020; }
-    .status.ok{ color:green; }
+    input[type="file"]{
+      display:none;
+    }
 
-    #thanks{ display:none; text-align:center; }
-    #thanks h1{ font-family:var(--font-heading); }
-  
-    /* --- Overrides for cleaner titles & consistent padding --- */
-    .header-row h1{ font-size:28px; line-height:1.05; margin:0; text-transform:none; letter-spacing:0.5px; font-weight:700; }
-    .card{ padding:32px !important; }
-    form { display:block; }
-    form label{ display:block; margin:14px 0 8px 0; font-size:16px; }
-    input[type=text], input[type=email], input[type=tel]{ padding:14px 16px; border-radius:8px; }
-    .checkbox-group{ margin-top:12px; }
-    .btn{ padding:11px 18px; }
-    /* ensure no raw HTML displays by resetting white-space in container areas */
-    .card, .header-row, form { white-space: normal; }
+    img.preview{
+      display:none;
+      max-width:300px;
+      margin-top:16px;
+      border-radius:16px;
+      border:1px solid #ccc;
+      box-shadow:0 6px 14px rgba(0,0,0,.15);
+    }
+
+    .btn{
+      display:block;
+      width:100%;
+      margin-top:30px;
+      padding:18px 22px;
+      border-radius:18px;
+      background:#000;
+      color:#fff;
+      border:none;
+      cursor:pointer;
+      font-weight:700;
+      font-size:18px;
+      font-family:"Playpen Sans Thai", system-ui;
+    }
+
+    .status{ margin-top:14px; }
+    .error{ color:#b00020; }
+    .ok{ color:green; }
+
+    /* THANK YOU PAGE */
+    .thanks-logo{
+      width:90px;
+      height:90px;
+      border-radius:50%;
+      margin-bottom:20px;
+    }
+
+    .thanks-title{
+      font-family:"Bagel Fat One";
+      font-size:52px;
+      margin-bottom:12px;
+    }
+
+    .thanks-text{
+      font-size:20px;
+    }
   </style>
 </head>
 <body>
 
-  <div id="formCard" class="card" style="padding-top:20px;">
-    <div class="header-row" style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-      <img src="./tfac.png" alt="TFAC Logo" style="width:42px;height:42px;border-radius:50%;object-fit:cover;flex-shrink:0;" />
-      <h1 style="margin:0;">TEESFORACAUSE: DONATION DRIVE</h1>
+<div id="formCard" class="card">
+
+  <div style="display:flex;align-items:center;gap:16px;">
+    <img src="./tfac.png" style="width:70px;height:70px;border-radius:50%">
+    <div>
+      <h1>TEESFORACAUSE</h1>
+      <div class="subhead">The Fabric Within Us — T-Shirt Painting Workshop</div>
     </div>
-
-    <form id="submissionForm" novalidate> 
-      <label>Name</label>
-      <input id="name" name="name" type="text" placeholder="Your full name" required />
-
-      <br><br>
-      <label>Email</label>
-      <input id="email" name="email" type="email" placeholder="you@example.com" required />
-
-      <br><br>
-      <label>Age</label>
-      <input id="age" name="age" type="text" inputmode="numeric" placeholder="e.g., 16" required />
-
-      <br><br>
-      <label>Number</label>
-      <input id="number" name="number" type="tel" placeholder="10 digits" required />
-
-      <br><br>
-      <div class="checkbox-group">
-        <input id="confirmation" name="confirmation" type="checkbox" />
-        <label for="confirmation" class="checkbox-label">I confirm my participation</label>
-      </div>
-
-      <br>
-      <button id="submitBtn" class="btn" type="submit">Submit</button>
-      <div id="status" class="status"></div>
-    </form>
   </div>
 
-  <div id="thanks" class="card" style="padding-top:20px;">
-    <div class="header-row" style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-      <img src="./tfac.png" alt="TFAC Logo" style="width:42px;height:42px;border-radius:50%;object-fit:cover;flex-shrink:0;" />
-      <h1 style="margin:0;">Thank you for volunteering!</h1>
+  <form id="submissionForm" novalidate>
+
+    <label>Name</label>
+    <input name="name" required>
+
+    <label>Email</label>
+    <input name="email" type="email" required>
+
+    <label>Age</label>
+    <input name="age" inputmode="numeric" required>
+
+    <label>T-Shirt Size</label>
+    <select name="size" required>
+      <option value="">Select</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+      <option>XXL</option>
+    </select>
+
+    <label>Phone Number</label>
+    <input name="phone" inputmode="numeric" placeholder="10 digits" required>
+
+    <label>Scan QR Code to Pay</label>
+    <div class="qr-box">
+      <img src="./qr.jpg" alt="Payment QR Code">
     </div>
-    <p>Thank you for participating. We will contact you soon.</p>
-    
-  </div>
 
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/+esm";
+    <label>Upload a screenshot of the payment confirmation</label>
+    <label class="file-btn">
+      Choose file
+      <input type="file" name="screenshot" accept="image/*" required>
+    </label>
 
-    // UPDATED SUPABASE VALUES
-    const SUPABASE_URL = "https://yxicunqthexfwysacjfo.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl4aWN1bnF0aGV4Znd5c2FjamZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1Mjg1NDMsImV4cCI6MjA4MTEwNDU0M30.AEQNRICSrjP63VGFstL3iwDBi6dGRhaUhMA0ozLN3Uo";
-    const TABLE = "submissions";
+    <img id="preview" class="preview">
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    <button class="btn">Submit</button>
+    <div id="status" class="status"></div>
 
-    const form = document.getElementById("submissionForm");
-    const statusEl = document.getElementById("status");
-    const formCard = document.getElementById("formCard");
-    const thanks = document.getElementById("thanks");
-    const submitBtn = document.getElementById("submitBtn");
+  </form>
+</div>
 
-    function setStatus(msg, error=false){
-      statusEl.textContent = msg;
-      statusEl.classList.toggle("error", error);
-      statusEl.classList.toggle("ok", !error);
-    }
+<!-- THANK YOU PAGE -->
+<div id="thanks" class="card" style="display:none;text-align:center">
 
-    form.addEventListener("submit", async (e)=>{
-      e.preventDefault();
-      setStatus("");
+  <img src="./tfac.png" alt="TFAC Logo" class="thanks-logo">
 
-      const name = form.name.value.trim();
-      const email = form.email.value.trim();
-      const age = form.age.value.trim();
-      const number = form.number.value.trim();
-      const confirmation = form.confirmation.checked;
+  <div class="thanks-title">Thank you for participating!</div>
+  <div class="thanks-text">Can't wait to see you there</div>
 
-      if(!name) return setStatus("Enter name", true);
-      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setStatus("Invalid email", true);
-      if(isNaN(Number(age))) return setStatus("Invalid age", true);
-      if(!/^\d{10}$/.test(number)) return setStatus("Invalid number", true);
-      if(!confirmation) return setStatus("Please confirm participation", true);
+</div>
 
-      submitBtn.disabled = true;
-      setStatus("Submitting...");
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-      const payload = { name, email, age:Number(age), number, confirmation:true, submitted_at:new Date().toISOString() };
+const supabase = createClient(
+  "https://btjetspsolaoeqvoywqe.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0amV0c3Bzb2xhb2Vxdm95d3FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5NTA2MjAsImV4cCI6MjA4MTUyNjYyMH0.14z4K4CCxUBE-hLwtlB6gx1NgVXDCh1TKZFWfhORd44"
+);
 
-      const { data, error } = await supabase.from(TABLE).insert([payload]).select("id").single();
+const form = document.getElementById("submissionForm");
+const statusEl = document.getElementById("status");
+const preview = document.getElementById("preview");
 
-      if(error){
-        console.error(error);
-        setStatus("Insert failed: " + error.message, true);
-        submitBtn.disabled = false;
-        return;
-      }
+form.screenshot.addEventListener("change", e=>{
+  const file = e.target.files[0];
+  if(file){
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+  }
+});
 
-      setStatus("Success!", false);
-      formCard.style.display = "none";
-      thanks.style.display = "block";
-    });
-  </script>
+form.addEventListener("submit", async e=>{
+  e.preventDefault();
+  statusEl.textContent = "";
+
+  const f = form;
+  const file = f.screenshot.files[0];
+  if(!file) return statusEl.textContent = "Upload payment screenshot";
+
+  const path = `${crypto.randomUUID()}-${file.name}`;
+
+  await supabase.storage.from("payments").upload(path, file);
+
+  const { data } = supabase.storage.from("payments").getPublicUrl(path);
+
+  await supabase.from("submissions").insert({
+    name: f.name.value.trim(),
+    email: f.email.value.trim(),
+    age: Number(f.age.value),
+    tshirt_size: f.size.value,
+    phone: Number(f.phone.value),
+    payment_image_url: data.publicUrl
+  });
+
+  document.getElementById("formCard").style.display = "none";
+  document.getElementById("thanks").style.display = "block";
+});
+</script>
 
 </body>
 </html>
