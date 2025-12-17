@@ -33,7 +33,6 @@
     .subhead{
       margin-top:6px;
       font-size:18px;
-      color:#000;
       font-weight:600;
     }
 
@@ -79,19 +78,16 @@
       cursor:pointer;
       font-weight:700;
       font-size:16px;
-      font-family:"Playpen Sans Thai", system-ui;
       margin-top:10px;
     }
 
-    input[type="file"]{
-      display:none;
-    }
+    input[type="file"]{ display:none; }
 
-    img.preview{
+    .preview{
       display:none;
-      max-width:300px;
-      margin-top:16px;
-      border-radius:16px;
+      max-width:280px;
+      margin-top:14px;
+      border-radius:14px;
       border:1px solid #ccc;
       box-shadow:0 6px 14px rgba(0,0,0,.15);
     }
@@ -99,8 +95,8 @@
     .btn{
       display:block;
       width:100%;
-      margin-top:30px;
-      padding:18px 22px;
+      margin-top:28px;
+      padding:18px;
       border-radius:18px;
       background:#000;
       color:#fff;
@@ -111,27 +107,8 @@
       font-family:"Playpen Sans Thai", system-ui;
     }
 
-    .status{ margin-top:14px; }
+    .status{ margin-top:14px; font-size:14px; }
     .error{ color:#b00020; }
-    .ok{ color:green; }
-
-    /* THANK YOU PAGE */
-    .thanks-logo{
-      width:90px;
-      height:90px;
-      border-radius:50%;
-      margin-bottom:20px;
-    }
-
-    .thanks-title{
-      font-family:"Bagel Fat One";
-      font-size:52px;
-      margin-bottom:12px;
-    }
-
-    .thanks-text{
-      font-size:20px;
-    }
   </style>
 </head>
 <body>
@@ -141,8 +118,8 @@
   <div style="display:flex;align-items:center;gap:16px;">
     <img src="./tfac.png" style="width:70px;height:70px;border-radius:50%">
     <div>
-      <h1>TEESFORACAUSE</h1>
-      <div class="subhead">The Fabric Within Us — T-Shirt Painting Workshop</div>
+      <h1>The Fabric Within Us</h1>
+      <div class="subhead">T-Shirt Painting Workshop</div>
     </div>
   </div>
 
@@ -159,12 +136,12 @@
 
     <label>T-Shirt Size</label>
     <select name="size" required>
-      <option value="">Select</option>
+      <option value="">Select size</option>
+      <option>XS</option>
       <option>S</option>
       <option>M</option>
       <option>L</option>
       <option>XL</option>
-      <option>XXL</option>
     </select>
 
     <label>Phone Number</label>
@@ -175,7 +152,7 @@
       <img src="./qr.jpg" alt="Payment QR Code">
     </div>
 
-    <label>Upload a screenshot of the payment confirmation</label>
+    <label>Upload payment confirmation screenshot (required)</label>
     <label class="file-btn">
       Choose file
       <input type="file" name="screenshot" accept="image/*" required>
@@ -183,20 +160,10 @@
 
     <img id="preview" class="preview">
 
-    <button class="btn">Submit</button>
+    <button class="btn">Submit Registration</button>
     <div id="status" class="status"></div>
 
   </form>
-</div>
-
-<!-- THANK YOU PAGE -->
-<div id="thanks" class="card" style="display:none;text-align:center">
-
-  <img src="./tfac.png" alt="TFAC Logo" class="thanks-logo">
-
-  <div class="thanks-title">Thank you for participating!</div>
-  <div class="thanks-text">Can't wait to see you there</div>
-
 </div>
 
 <script type="module">
@@ -204,46 +171,75 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const supabase = createClient(
   "https://btjetspsolaoeqvoywqe.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0amV0c3Bzb2xhb2Vxdm95d3FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5NTA2MjAsImV4cCI6MjA4MTUyNjYyMH0.14z4K4CCxUBE-hLwtlB6gx1NgVXDCh1TKZFWfhORd44"
+  "YOUR_ANON_KEY"
 );
 
 const form = document.getElementById("submissionForm");
 const statusEl = document.getElementById("status");
 const preview = document.getElementById("preview");
 
-form.screenshot.addEventListener("change", e=>{
+form.screenshot.addEventListener("change", e => {
   const file = e.target.files[0];
-  if(file){
+  if (file) {
     preview.src = URL.createObjectURL(file);
     preview.style.display = "block";
   }
 });
 
-form.addEventListener("submit", async e=>{
+form.addEventListener("submit", async e => {
   e.preventDefault();
   statusEl.textContent = "";
+  statusEl.className = "status";
 
   const f = form;
   const file = f.screenshot.files[0];
-  if(!file) return statusEl.textContent = "Upload payment screenshot";
+
+  if (!file) {
+    statusEl.textContent = "Payment confirmation screenshot is required.";
+    statusEl.classList.add("error");
+    return;
+  }
 
   const path = `${crypto.randomUUID()}-${file.name}`;
 
-  await supabase.storage.from("payments").upload(path, file);
+  statusEl.textContent = "Uploading payment screenshot…";
 
-  const { data } = supabase.storage.from("payments").getPublicUrl(path);
+  const { error: uploadError } = await supabase
+    .storage.from("payments")
+    .upload(path, file);
 
-  await supabase.from("submissions").insert({
-    name: f.name.value.trim(),
-    email: f.email.value.trim(),
-    age: Number(f.age.value),
-    tshirt_size: f.size.value,
-    phone: Number(f.phone.value),
-    payment_image_url: data.publicUrl
-  });
+  if (uploadError) {
+    statusEl.textContent = uploadError.message;
+    statusEl.classList.add("error");
+    return;
+  }
 
-  document.getElementById("formCard").style.display = "none";
-  document.getElementById("thanks").style.display = "block";
+  const { data } = supabase
+    .storage.from("payments")
+    .getPublicUrl(path);
+
+  statusEl.textContent = "Submitting registration…";
+
+  const { error } = await supabase
+    .from("submissions")
+    .insert({
+      name: f.name.value.trim(),
+      email: f.email.value.trim(),
+      age: Number(f.age.value),
+      tshirt_size: f.size.value,
+      phone: Number(f.phone.value),
+      payment_image_url: data.publicUrl
+    });
+
+  if (error) {
+    statusEl.textContent = error.message;
+    statusEl.classList.add("error");
+    return;
+  }
+
+  form.reset();
+  preview.style.display = "none";
+  statusEl.textContent = "Registration submitted successfully!";
 });
 </script>
 
