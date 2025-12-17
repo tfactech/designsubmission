@@ -19,7 +19,7 @@
       max-width:900px;
       margin:auto;
       background:#fff;
-      padding:36px; /* FIX: inner spacing */
+      padding:36px;
       border-radius:18px;
       box-shadow:0 12px 28px rgba(0,0,0,.18);
     }
@@ -34,10 +34,6 @@
       margin-top:6px;
       font-size:18px;
       font-weight:600;
-    }
-
-    form{
-      margin-top:24px;
     }
 
     label{
@@ -58,7 +54,6 @@
       box-sizing:border-box;
     }
 
-    /* QR */
     .qr-box{
       margin:22px auto 12px;
       width:360px;
@@ -68,15 +63,13 @@
       text-align:center;
       box-shadow:0 10px 24px rgba(0,0,0,.15);
     }
+
     .qr-box img{
       width:100%;
       border-radius:16px;
     }
 
-    /* Custom file upload */
-    input[type="file"]{
-      display:none; /* hide ugly native input */
-    }
+    input[type="file"]{ display:none; }
 
     .file-btn{
       display:inline-block;
@@ -88,7 +81,6 @@
       cursor:pointer;
       font-weight:700;
       font-size:16px;
-      font-family:"Playpen Sans Thai", system-ui;
     }
 
     .file-name{
@@ -120,10 +112,7 @@
       font-family:"Playpen Sans Thai", system-ui;
     }
 
-    .status{
-      margin-top:16px;
-      font-size:14px;
-    }
+    .status{ margin-top:16px; font-size:14px; }
     .error{ color:#b00020; }
     .ok{ color:green; }
   </style>
@@ -162,7 +151,7 @@
     </select>
 
     <label>Phone Number</label>
-    <input name="phone" inputmode="numeric" placeholder="10 digits" required>
+    <input name="phone" inputmode="numeric" required>
 
     <label>Scan QR Code to Pay</label>
     <div class="qr-box">
@@ -190,7 +179,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const supabase = createClient(
   "https://btjetspsolaoeqvoywqe.supabase.co",
-  "YOUR_ANON_KEY_HERE"
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0amV0c3Bzb2xhb2Vxdm95d3FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5NTA2MjAsImV4cCI6MjA4MTUyNjYyMH0.14z4K4CCxUBE-hLwtlB6gx1NgVXDCh1TKZFWfhORd44"
 );
 
 const form = document.getElementById("form");
@@ -212,7 +201,7 @@ form.image.addEventListener("change", () => {
   reader.readAsDataURL(file);
 });
 
-form.addEventListener("submit", async e => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
   statusEl.textContent = "";
   statusEl.className = "status";
@@ -224,7 +213,7 @@ form.addEventListener("submit", async e => {
     return;
   }
 
-  if (file.size > 600_000) {
+  if (file.size > 600000) {
     statusEl.textContent = "Image too large. Upload under 600 KB.";
     statusEl.classList.add("error");
     return;
@@ -235,18 +224,16 @@ form.addEventListener("submit", async e => {
     const dataUrl = reader.result;
     const base64 = dataUrl.split(",")[1];
 
-    const { error } = await supabase
-      .from("submissions")
-      .insert({
-        name: form.name.value.trim(),
-        email: form.email.value.trim(),
-        age: Number(form.age.value),
-        tshirt_size: form.size.value,
-        phone: Number(form.phone.value),
-        payment_image_base64: base64,
-        payment_image_type: file.type,
-        payment_image_url: dataUrl
-      });
+    const { error } = await supabase.from("submissions").insert({
+      name: form.name.value.trim(),
+      email: form.email.value.trim(),
+      age: Number(form.age.value),
+      tshirt_size: form.size.value,
+      phone: Number(form.phone.value),
+      payment_image_base64: base64,
+      payment_image_type: file.type,
+      payment_image_url: dataUrl
+    });
 
     if (error) {
       statusEl.textContent = error.message;
