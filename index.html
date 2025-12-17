@@ -19,8 +19,8 @@
       max-width:900px;
       margin:auto;
       background:#fff;
-      padding:32px;
-      border-radius:16px;
+      padding:36px; /* FIX: inner spacing */
+      border-radius:18px;
       box-shadow:0 12px 28px rgba(0,0,0,.18);
     }
 
@@ -36,9 +36,13 @@
       font-weight:600;
     }
 
+    form{
+      margin-top:24px;
+    }
+
     label{
       display:block;
-      margin-top:18px;
+      margin-top:20px;
       font-weight:700;
       font-size:16px;
     }
@@ -51,10 +55,12 @@
       margin-top:8px;
       font-family:"Playpen Sans Thai", system-ui;
       font-size:15px;
+      box-sizing:border-box;
     }
 
+    /* QR */
     .qr-box{
-      margin:22px auto 10px;
+      margin:22px auto 12px;
       width:360px;
       padding:22px;
       border-radius:22px;
@@ -62,14 +68,46 @@
       text-align:center;
       box-shadow:0 10px 24px rgba(0,0,0,.15);
     }
-
     .qr-box img{
       width:100%;
       border-radius:16px;
     }
 
+    /* Custom file upload */
+    input[type="file"]{
+      display:none; /* hide ugly native input */
+    }
+
+    .file-btn{
+      display:inline-block;
+      margin-top:10px;
+      padding:14px 22px;
+      border-radius:14px;
+      background:#000;
+      color:#fff;
+      cursor:pointer;
+      font-weight:700;
+      font-size:16px;
+      font-family:"Playpen Sans Thai", system-ui;
+    }
+
+    .file-name{
+      margin-top:8px;
+      font-size:14px;
+      color:#555;
+    }
+
+    .preview{
+      display:none;
+      margin-top:14px;
+      max-width:260px;
+      border-radius:14px;
+      border:1px solid #ccc;
+      box-shadow:0 6px 14px rgba(0,0,0,.15);
+    }
+
     .btn{
-      margin-top:28px;
+      margin-top:30px;
       width:100%;
       padding:18px;
       background:#000;
@@ -83,10 +121,9 @@
     }
 
     .status{
-      margin-top:14px;
+      margin-top:16px;
       font-size:14px;
     }
-
     .error{ color:#b00020; }
     .ok{ color:green; }
   </style>
@@ -133,7 +170,14 @@
     </div>
 
     <label>Upload payment confirmation screenshot (required)</label>
-    <input type="file" name="image" accept="image/*" required>
+
+    <label class="file-btn">
+      Choose file
+      <input type="file" name="image" accept="image/*" required>
+    </label>
+
+    <div id="fileName" class="file-name"></div>
+    <img id="preview" class="preview">
 
     <button class="btn">Submit Registration</button>
     <div id="status" class="status"></div>
@@ -151,14 +195,29 @@ const supabase = createClient(
 
 const form = document.getElementById("form");
 const statusEl = document.getElementById("status");
+const preview = document.getElementById("preview");
+const fileNameEl = document.getElementById("fileName");
 
-form.addEventListener("submit", async (e) => {
+form.image.addEventListener("change", () => {
+  const file = form.image.files[0];
+  if (!file) return;
+
+  fileNameEl.textContent = file.name;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    preview.src = reader.result;
+    preview.style.display = "block";
+  };
+  reader.readAsDataURL(file);
+});
+
+form.addEventListener("submit", async e => {
   e.preventDefault();
   statusEl.textContent = "";
   statusEl.className = "status";
 
   const file = form.image.files[0];
-
   if (!file) {
     statusEl.textContent = "Payment screenshot is required.";
     statusEl.classList.add("error");
@@ -172,9 +231,8 @@ form.addEventListener("submit", async (e) => {
   }
 
   const reader = new FileReader();
-
   reader.onload = async () => {
-    const dataUrl = reader.result;                  // data:image/...;base64,...
+    const dataUrl = reader.result;
     const base64 = dataUrl.split(",")[1];
 
     const { error } = await supabase
@@ -199,6 +257,8 @@ form.addEventListener("submit", async (e) => {
     statusEl.textContent = "Registration submitted successfully!";
     statusEl.classList.add("ok");
     form.reset();
+    preview.style.display = "none";
+    fileNameEl.textContent = "";
   };
 
   reader.readAsDataURL(file);
