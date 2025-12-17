@@ -1,247 +1,62 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>TEESFORACAUSE — The Fabric Within Us</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Playpen+Sans+Thai&display=swap" rel="stylesheet">
-
-  <style>
-    body{
-      margin:0;
-      padding:24px;
-      background:#F5EEDF;
-      font-family:"Playpen Sans Thai", system-ui;
-    }
-
-    .card{
-      max-width:900px;
-      margin:auto;
-      background:#fff;
-      padding:32px;
-      border-radius:16px;
-      box-shadow:0 12px 28px rgba(0,0,0,.18);
-    }
-
-    h1{
-      font-family:"Bagel Fat One";
-      margin:0;
-      font-size:36px;
-    }
-
-    .subhead{
-      margin-top:6px;
-      font-size:18px;
-      font-weight:600;
-    }
-
-    label{
-      font-weight:700;
-      display:block;
-      margin-top:18px;
-      font-size:16px;
-    }
-
-    input, select{
-      width:100%;
-      padding:14px 16px;
-      border-radius:12px;
-      border:1px solid #ccc;
-      margin-top:8px;
-      font-family:"Playpen Sans Thai", system-ui;
-      font-size:15px;
-    }
-
-    .qr-box{
-      margin:20px auto 10px;
-      width:360px;
-      padding:22px;
-      border-radius:22px;
-      background:#fff;
-      border:2px solid #000;
-      box-shadow:0 10px 24px rgba(0,0,0,.15);
-      text-align:center;
-    }
-
-    .qr-box img{
-      width:100%;
-      border-radius:16px;
-    }
-
-    .file-btn{
-      display:inline-block;
-      padding:14px 22px;
-      border-radius:14px;
-      background:#000;
-      color:#fff;
-      cursor:pointer;
-      font-weight:700;
-      font-size:16px;
-      margin-top:10px;
-    }
-
-    input[type="file"]{ display:none; }
-
-    .preview{
-      display:none;
-      max-width:280px;
-      margin-top:14px;
-      border-radius:14px;
-      border:1px solid #ccc;
-      box-shadow:0 6px 14px rgba(0,0,0,.15);
-    }
-
-    .btn{
-      display:block;
-      width:100%;
-      margin-top:28px;
-      padding:18px;
-      border-radius:18px;
-      background:#000;
-      color:#fff;
-      border:none;
-      cursor:pointer;
-      font-weight:700;
-      font-size:18px;
-      font-family:"Playpen Sans Thai", system-ui;
-    }
-
-    .status{ margin-top:14px; font-size:14px; }
-    .error{ color:#b00020; }
-  </style>
-</head>
-<body>
-
-<div id="formCard" class="card">
-
-  <div style="display:flex;align-items:center;gap:16px;">
-    <img src="./tfac.png" style="width:70px;height:70px;border-radius:50%">
-    <div>
-      <h1>The Fabric Within Us</h1>
-      <div class="subhead">T-Shirt Painting Workshop</div>
-    </div>
-  </div>
-
-  <form id="submissionForm" novalidate>
-
-    <label>Name</label>
-    <input name="name" required>
-
-    <label>Email</label>
-    <input name="email" type="email" required>
-
-    <label>Age</label>
-    <input name="age" inputmode="numeric" required>
-
-    <label>T-Shirt Size</label>
-    <select name="size" required>
-      <option value="">Select size</option>
-      <option>XS</option>
-      <option>S</option>
-      <option>M</option>
-      <option>L</option>
-      <option>XL</option>
-    </select>
-
-    <label>Phone Number</label>
-    <input name="phone" inputmode="numeric" placeholder="10 digits" required>
-
-    <label>Scan QR Code to Pay</label>
-    <div class="qr-box">
-      <img src="./qr.jpg" alt="Payment QR Code">
-    </div>
-
-    <label>Upload payment confirmation screenshot (required)</label>
-    <label class="file-btn">
-      Choose file
-      <input type="file" name="screenshot" accept="image/*" required>
-    </label>
-
-    <img id="preview" class="preview">
-
-    <button class="btn">Submit Registration</button>
-    <div id="status" class="status"></div>
-
-  </form>
-</div>
-
 <script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const supabase = createClient(
   "https://btjetspsolaoeqvoywqe.supabase.co",
   "YOUR_ANON_KEY"
 );
 
-const form = document.getElementById("submissionForm");
+const form = document.getElementById("form");
 const statusEl = document.getElementById("status");
-const preview = document.getElementById("preview");
-
-form.screenshot.addEventListener("change", e => {
-  const file = e.target.files[0];
-  if (file) {
-    preview.src = URL.createObjectURL(file);
-    preview.style.display = "block";
-  }
-});
 
 form.addEventListener("submit", async e => {
   e.preventDefault();
   statusEl.textContent = "";
-  statusEl.className = "status";
 
-  const f = form;
-  const file = f.screenshot.files[0];
-
+  const file = form.image.files[0];
   if (!file) {
-    statusEl.textContent = "Payment confirmation screenshot is required.";
-    statusEl.classList.add("error");
+    statusEl.textContent = "Payment screenshot is required.";
+    statusEl.className = "status error";
     return;
   }
 
-  const path = `${crypto.randomUUID()}-${file.name}`;
-
-  statusEl.textContent = "Uploading payment screenshot…";
-
-  const { error: uploadError } = await supabase
-    .storage.from("payments")
-    .upload(path, file);
-
-  if (uploadError) {
-    statusEl.textContent = uploadError.message;
-    statusEl.classList.add("error");
+  // hard size limit (IMPORTANT)
+  if (file.size > 600_000) {
+    statusEl.textContent = "Image too large. Upload under 600 KB.";
+    statusEl.className = "status error";
     return;
   }
 
-  const { data } = supabase
-    .storage.from("payments")
-    .getPublicUrl(path);
+  const reader = new FileReader();
 
-  statusEl.textContent = "Submitting registration…";
+  reader.onload = async () => {
+    const dataUrl = reader.result; // FULL data:image/...;base64,...
+    const base64 = dataUrl.split(",")[1];
 
-  const { error } = await supabase
-    .from("submissions")
-    .insert({
-      name: f.name.value.trim(),
-      email: f.email.value.trim(),
-      age: Number(f.age.value),
-      tshirt_size: f.size.value,
-      phone: Number(f.phone.value),
-      payment_image_url: data.publicUrl
-    });
+    const { error } = await supabase
+      .from("submissions")
+      .insert({
+        name: form.name.value.trim(),
+        email: form.email.value.trim(),
+        age: Number(form.age.value),
+        tshirt_size: form.size.value,
+        phone: Number(form.phone.value),
 
-  if (error) {
-    statusEl.textContent = error.message;
-    statusEl.classList.add("error");
-    return;
-  }
+        payment_image_base64: base64,
+        payment_image_type: file.type,
+        payment_image_url: dataUrl
+      });
 
-  form.reset();
-  preview.style.display = "none";
-  statusEl.textContent = "Registration submitted successfully!";
+    if (error) {
+      statusEl.textContent = error.message;
+      statusEl.className = "status error";
+      return;
+    }
+
+    statusEl.textContent = "Registration submitted successfully!";
+    form.reset();
+  };
+
+  reader.readAsDataURL(file);
 });
 </script>
-
-</body>
-</html>
